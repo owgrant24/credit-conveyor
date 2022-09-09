@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>conveyor-api</module>
+        <module>conveyor-backend</module>
     </modules>
 
     <dependencies>
