@@ -1,0 +1,26 @@
+{
+  "firstName": "Сергей",
+  "lastName": "Ершов",
+  "middleName": "Иванович",
+  "passportNumber": "564333",
+  "passportSeries": "4011",
+  "passportIssueDate": "2006-06-21",
+  "passportIssueBranch": "ТП №43 отдела УФМС России по Санкт-Петербургу и Ленинградской области",
+  "birthdate": "1992-06-21",
+  "amount": 300000,
+  "term": 18,
+  "dependentAmount": 1,
+  "isSalaryClient": true,
+  "isInsuranceEnabled": true,
+  "gender": "NON_BINARY",
+  "employment": {
+    "workExperienceCurrent": 15,
+    "position": "WORKER",
+    "workExperienceTotal": 15,
+    "employmentStatus": "UNEMPLOYED",
+    "salary": 90000,
+    "employerINN": "132123123123"
+  },
+  "maritalStatus": "SINGLE",
+  "account": "string"
+}
