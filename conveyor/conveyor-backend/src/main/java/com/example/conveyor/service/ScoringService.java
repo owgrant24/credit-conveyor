@@ -6,10 +6,12 @@ import com.example.conveyor.model.CreditInfo;
 import com.example.conveyor.model.PaymentScheduleElement;
 import com.example.conveyor.model.ScoringInfo;
 import com.example.conveyor.service.util.CalcUtil;
+import com.example.conveyor.util.TimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
@@ -83,7 +85,7 @@ public class ScoringService {
         if (scoringInfo.getDependentAmount() > 1) {
             currentRate = new BigDecimal(String.valueOf(currentRate.add(BigDecimal.valueOf(1))));
         }
-        if (Period.between(scoringInfo.getBirthdate(), LocalDate.now()).getYears() > 60) {
+        if (Period.between(scoringInfo.getBirthdate(), TimeUtil.currentDate()).getYears() > 60) {
             currentRate = new BigDecimal(String.valueOf(currentRate.add(BigDecimal.valueOf(1))));
         }
         return currentRate;
@@ -94,7 +96,7 @@ public class ScoringService {
                                                                    BigDecimal monthlyPayment, BigDecimal amount) {
         List<PaymentScheduleElement> paymentScheduleElementList = new ArrayList<>();
 
-        LocalDate currentDate = LocalDate.now();
+        LocalDate currentDate = TimeUtil.currentDate();
         BigDecimal remainingDebt = amount;
 
         for (int i = 0; i < term; i++) {

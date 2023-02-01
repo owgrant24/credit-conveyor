@@ -6,6 +6,7 @@ import com.example.conveyor.model.CreditInfo;
 import com.example.conveyor.model.Employment;
 import com.example.conveyor.model.PaymentScheduleElement;
 import com.example.conveyor.model.ScoringInfo;
+import com.example.conveyor.util.TimeUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.*;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ScoringServiceTest {
 
+    private final static LocalDate FIXED_DATE = LocalDate.of(2023, 1, 1);
     private static final BigDecimal BASE_RATE = new BigDecimal("18");
     private static final int AGE = 45;
 
@@ -32,6 +34,7 @@ class ScoringServiceTest {
 
     @Test
     void whenCreateCreditThenSuccess() {
+        TimeUtil.useMockTime(FIXED_DATE.atStartOfDay(),ZoneId.systemDefault());
         when(appConfig.getBaseRate()).thenReturn(BASE_RATE);
         ScoringInfo scoringInfo = getScoringInfo();
 
