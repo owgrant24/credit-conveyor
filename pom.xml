@@ -17,6 +17,8 @@
     <modules>
         <module>conveyor</module>
         <module>deal</module>
+        <module>application</module>
+        <module>application/application-api</module>
     </modules>
 
     <properties>
