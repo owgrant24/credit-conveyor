@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS applications
     creation_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     applied_offer JSONB,
     sign_date     TIMESTAMP WITHOUT TIME ZONE,
-    ses_code      VARCHAR(255),
+    ses_code      INTEGER,
     CONSTRAINT pk_applications PRIMARY KEY (id)
 );
 

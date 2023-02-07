@@ -40,7 +40,7 @@ public class Application {
     @Type(type = "jsonb")
     private LoanOfferDTO appliedOffer;
     private Timestamp signDate;
-    private String sesCode;
+    private Integer sesCode;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StatusHistory> statusHistory;
 
