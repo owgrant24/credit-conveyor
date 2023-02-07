@@ -39,6 +39,7 @@ public class DealService {
     private final DealMapper dealMapper;
     private final ClientRepository clientRepository;
     private final ConveyorService conveyorService;
+    private final DocumentService documentService;
     private final ApplicationRepository applicationRepository;
     private final CreditRepository creditRepository;
 
@@ -75,7 +76,9 @@ public class DealService {
 
         application.setCredit(savedCredit);
         updateStatus(application, CC_APPROVED, AUTOMATIC);
-        applicationRepository.save(application);
+        Application savedApplication = applicationRepository.save(application);
+
+        documentService.createDocuments(savedApplication);
     }
 
     private Client createClient(LoanApplicationRequestDTO loanApplicationRequestDTO) {
@@ -88,7 +91,7 @@ public class DealService {
         return application;
     }
 
-    private void updateStatus(Application application, ApplicationStatus status, ChangeType changeType) {
+    public void updateStatus(Application application, ApplicationStatus status, ChangeType changeType) {
         List<StatusHistory> statusHistory = updateStatusHistories(application.getStatusHistory(), status, changeType);
         application.setStatus(status);
         application.setStatusHistory(statusHistory);
