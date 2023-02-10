@@ -40,8 +40,7 @@ public interface DealApi {
             description = "Завершить регистрацию + полностью рассчитать параметры кредита",
             summary = "Завершение регистрации + Полный расчет параметров кредита"
     )
-    @ApiResponse(responseCode = "200", description = "OK", content =
-    @Content(schema = @Schema(implementation = CreditDTO.class)))
+    @ApiResponse(responseCode = "200", description = "OK")
     void calculate(@PathVariable("applicationId") String applicationId,
                    @Parameter(description = "Тело запроса", required = true)
                    @RequestBody @Valid FinishRegistrationRequestDTO finishRegistrationRequestDTO,
