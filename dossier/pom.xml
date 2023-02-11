@@ -11,7 +11,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>dossier-api</module>
         <module>dossier-backend</module>
     </modules>
 
