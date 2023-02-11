@@ -1,0 +1,112 @@
+version: "3.9"
+
+services:
+  gateway:
+    build: gateway
+    container_name: c-gateway
+    ports:
+      - "8999:8999"
+    networks:
+      - bridged_network
+  application:
+    build: application
+    container_name: c-application
+    ports:
+    - "8006:8006"
+    environment:
+      INTEGRATION_DEAL_CLIENT_URL: 'http://deal:8004'
+    networks:
+      - bridged_network
+  conveyor:
+    build: conveyor
+    container_name: c-conveyor
+    ports:
+      - "8005:8005"
+    networks:
+      - bridged_network
+  deal:
+    build: deal
+    container_name: c-deal
+    ports:
+      - "8004:8004"
+    depends_on:
+      - database
+      - kafka
+    links:
+      - database
+    environment:
+      DB_URL: 'jdbc:postgresql://database:5432/deal'
+      DB_USERNAME: 'postgres'
+      DB_PASSWORD: 'postgres'
+      INTEGRATION_CONVEYOR_CLIENT_URL: 'http://conveyor:8005'
+      INTEGRATION_DOSSIER_BOOTSTRAPSERVERS: 'kafka:9092'
+    networks:
+      - bridged_network
+  dossier:
+    build: dossier
+    container_name: c-dossier
+    ports:
+      - "8007:8007"
+    environment:
+      DOSSIER_CONSUMER_BOOTSTRAPSERVERS: 'kafka:9092'
+      CONVEYOR_MAIL_HOST: 'smtp.rambler.ru'
+      CONVEYOR_MAIL_PORT: '465'
+    env_file:
+      - secret.env # Файл example-secret.env заполнить, переименовать в secret.env
+    depends_on:
+      - kafka
+    networks:
+      - bridged_network
+
+  database:
+    image: 'postgres:13.1-alpine'
+    container_name: c-db
+    hostname: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "deal"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    networks:
+      - bridged_network
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    hostname: zookeeper
+    container_name: c-zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - bridged_network
+  kafka:
+    image: confluentinc/cp-server:7.3.0
+    hostname: kafka
+    container_name: c-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      CONFLUENT_METRICS_ENABLE: 'false'
+    networks:
+      - bridged_network
+
+networks:
+  bridged_network:
+    driver: bridge
