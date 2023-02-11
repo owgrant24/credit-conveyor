@@ -1,0 +1,11 @@
+{
+  "firstName": "Сергей",
+  "lastName": "Ершов",
+  "middleName": "Иванович",
+  "passportNumber": "564333",
+  "passportSeries": "4011",
+  "birthdate": "1992-06-21",
+  "email": "email@ya.ru",
+  "amount": 11000,
+  "term": 7
+}
