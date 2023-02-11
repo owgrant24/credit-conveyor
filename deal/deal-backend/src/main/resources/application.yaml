@@ -1,5 +1,8 @@
 server:
   port: 8004
+logging:
+  level:
+    org.zalando.logbook: DEBUG
 spring:
   application:
     name: deal
@@ -8,20 +11,20 @@ spring:
       ddl-auto: validate
   datasource:
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/deal}
-    password: ${DB_PASSWORD:postgres}
-    username: ${DB_USERNAME:postgres}
+    url: ${DB_URL}
+    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME}
   liquibase:
     database-change-log-lock-table: DEAL_DATABASECHANGELOGLOCK
 integration:
   conveyor:
     client:
-      url: http://localhost:8005
+      url: ${INTEGRATION_CONVEYOR_CLIENT_URL}
       connect-timeout: 30
       read-timeout: 30
       write-timeout: 30
   dossier:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${INTEGRATION_DOSSIER_BOOTSTRAPSERVERS}
     topic:
       finish-registration: 'conveyor-finish-registration'
       create-document: 'conveyor-create-documents'
@@ -29,9 +32,3 @@ integration:
       send-ses: 'conveyor-send-ses'
       credit-issued: 'conveyor-credit-issued'
       application-denied: 'conveyor-application-denied'
-
-logging:
-  level:
-    org:
-      zalando:
-        logbook: TRACE

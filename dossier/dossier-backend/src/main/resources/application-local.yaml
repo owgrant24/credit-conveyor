@@ -1,0 +1,11 @@
+sender:
+  mail:
+    account: default
+spring:
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+  mail:
+    host: smtp.rambler.ru
+    port: 465
+    password: default

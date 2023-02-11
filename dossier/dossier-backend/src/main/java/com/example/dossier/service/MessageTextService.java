@@ -14,7 +14,8 @@ public class MessageTextService {
         switch (message.getTheme()) {
             case CREATE_DOCUMENT -> {
                 emailMessage.setSubject("Создание документа");
-                emailMessage.setText("Скоринг прошёл успешно, для продолжения надо отправить запрос на создание документов");
+                emailMessage.setText(
+                        "Скоринг прошёл успешно, для продолжения надо отправить запрос на создание документов");
             }
             case FINISH_REGISTRATION -> {
                 emailMessage.setSubject("Завершение регистрации");
@@ -22,15 +23,17 @@ public class MessageTextService {
             }
             case SEND_DOCUMENT -> {
                 emailMessage.setSubject("Необходимые документы");
-                emailMessage.setText("Просмотрите документы в этом письме, и отправьте запрос на подписание документов");
+                emailMessage.setText(
+                        "Просмотрите документы в этом письме, и отправьте запрос на подписание документов");
             }
             case SEND_SES -> {
                 emailMessage.setSubject("Специальный код");
-                emailMessage.setText("Данный код, необходимо прислать вместе с id заявки на подписание");
+                emailMessage.setText(
+                        "Код: " + message.getText() + " необходимо прислать вместе с id заявки на подписание");
             }
             case CREDIT_ISSUED -> {
                 emailMessage.setSubject("Подтверждение успешного взятия кредита");
-                emailMessage.setText("Необходимо подтвердить взятие кредита");
+                emailMessage.setText("Кредит успешно выдан!");
             }
             case APPLICATION_DENIED -> {
                 emailMessage.setSubject("Отмена взятия кредита");

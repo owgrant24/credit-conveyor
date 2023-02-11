@@ -11,4 +11,5 @@ public class Message {
     private UUID applicationId;
     private String address;
     private Theme theme;
+    private String text;
 }
