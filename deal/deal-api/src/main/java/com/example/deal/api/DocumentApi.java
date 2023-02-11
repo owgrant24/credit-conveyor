@@ -2,6 +2,7 @@ package com.example.deal.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RequestMapping("/deal/document")
+@Tag(name = "DocumentApi", description = "Операции с документами")
 public interface DocumentApi {
 
     @PostMapping(path = "/{applicationId}/send", produces = MediaType.APPLICATION_JSON_VALUE)
