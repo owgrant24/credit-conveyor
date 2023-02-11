@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: deal
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/deal}
+    password: ${DB_PASSWORD:postgres}
+    username: ${DB_USERNAME:postgres}
+  liquibase:
+    database-change-log-lock-table: DEAL_DATABASECHANGELOGLOCK
+integration:
+  conveyor:
+    client:
+      url: http://localhost:8005
+      connect-timeout: 30
+      read-timeout: 30
+      write-timeout: 30
+
+logging:
+  level:
+    org:
+      zalando:
+        logbook: TRACE
