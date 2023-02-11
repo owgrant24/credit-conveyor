@@ -4,7 +4,7 @@ import com.example.deal.db.entity.Application;
 import com.example.deal.db.entity.Credit;
 import com.example.deal.db.enums.ApplicationStatus;
 import com.example.deal.db.enums.CreditStatus;
-import com.example.deal.db.repository.ApplicationRepository;
+import com.example.deal.db.helper.ApplicationHelper;
 import com.example.deal.db.repository.CreditRepository;
 import com.example.deal.dto.EmailMessage;
 import com.example.deal.dto.Theme;
@@ -26,9 +26,8 @@ import static com.example.deal.util.SesCodeGeneratorUtil.createSesCode;
 @Service
 @RequiredArgsConstructor
 public class DocumentService {
+    private final ApplicationHelper applicationHelper;
     private final DossierService dossierService;
-    private final DealService dealService;
-    private final ApplicationRepository applicationRepository;
     private final CreditRepository creditRepository;
 
     public void createDocuments(Application application) {
@@ -37,42 +36,40 @@ public class DocumentService {
     }
 
     public void send(UUID applicationId) {
-        Application application = applicationRepository.getReferenceById(applicationId);
+        Application application = applicationHelper.getById(applicationId);
         EmailMessage emailMessage = createEmailMessage(application, Theme.SEND_DOCUMENT);
         dossierService.sendMessage(emailMessage);
     }
 
     public void sign(UUID applicationId) {
-        Application application = applicationRepository.getReferenceById(applicationId);
+        Application application = applicationHelper.getById(applicationId);
         application.setSesCode(createSesCode());
 
-        applicationRepository.save(application);
+        applicationHelper.save(application);
         EmailMessage emailMessage = createEmailMessage(application, Theme.SEND_SES);
         dossierService.sendMessage(emailMessage);
     }
 
 
     public void code(UUID applicationId, Integer sesCode) {
-        Application application = applicationRepository.getReferenceById(applicationId);
+        Application application = applicationHelper.getById(applicationId);
 
         if (!Objects.equals(application.getSesCode(), sesCode)) {
             throw new DealException("Incorrect code");
         }
         application.setSignDate(Timestamp.from(Instant.now()));
 
-        dealService.updateStatus(application, ApplicationStatus.DOCUMENT_SIGNED, MANUAL);
-
-        applicationRepository.save(application);
+        applicationHelper.saveAndUpdateStatus(application, ApplicationStatus.DOCUMENT_SIGNED, MANUAL);
 
         issueCredit(applicationId);
     }
 
     public void issueCredit(UUID applicationId) {
-        Application application = applicationRepository.getReferenceById(applicationId);
+        Application application = applicationHelper.getById(applicationId);
         UUID id = application.getCredit().getId();
         Credit credit = creditRepository.getReferenceById(id);
 
-        dealService.updateStatus(application, CREDIT_ISSUED, AUTOMATIC);
+        applicationHelper.saveAndUpdateStatus(application, CREDIT_ISSUED, AUTOMATIC);
         credit.setStatus(CreditStatus.ISSUED);
         creditRepository.save(credit);
 
