@@ -1,0 +1,15 @@
+server:
+  port: 8006
+
+logging:
+  level:
+    org.zalando.logbook: TRACE
+
+integration:
+  deal:
+    client:
+      url: http://localhost:8080
+      connect-timeout: 30
+      read-timeout: 30
+      write-timeout: 30
+
