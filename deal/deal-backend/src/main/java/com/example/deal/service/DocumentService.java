@@ -46,7 +46,8 @@ public class DocumentService {
         application.setSesCode(createSesCode());
 
         applicationHelper.save(application);
-        EmailMessage emailMessage = createEmailMessage(application, Theme.SEND_SES);
+        EmailMessage emailMessage = createEmailMessage(application, Theme.SEND_SES,
+                String.valueOf(application.getSesCode()));
         dossierService.sendMessage(emailMessage);
     }
 
@@ -78,10 +79,15 @@ public class DocumentService {
     }
 
     private static EmailMessage createEmailMessage(Application application, Theme theme) {
+        return createEmailMessage(application, theme, null);
+    }
+
+    private static EmailMessage createEmailMessage(Application application, Theme theme, String text) {
         return EmailMessage.builder()
                 .applicationId(application.getId())
                 .theme(theme)
                 .address(application.getClient().getEmail())
+                .text(text)
                 .build();
     }
 }
