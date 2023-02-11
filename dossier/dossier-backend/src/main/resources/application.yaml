@@ -1,0 +1,27 @@
+server:
+  port: 8007
+
+sender:
+  mail:
+    account: ${CONVEYOR_MAIL_ACCOUNT}
+
+spring:
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: dossier-consumer
+      auto-offset-reset: earliest
+  mail:
+    host: smtp.rambler.ru
+    port: 465
+    username: ${sender.mail.account}
+    password: ${CONVEYOR_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: true
+
