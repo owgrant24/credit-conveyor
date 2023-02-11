@@ -1,0 +1,14 @@
+logging:
+  level:
+    org.zalando.logbook: TRACE
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/deal
+    password: postgres
+    username: postgres
+integration:
+  conveyor:
+    client:
+      url: http://localhost:8005
+  dossier:
+    bootstrap-servers: localhost:9092

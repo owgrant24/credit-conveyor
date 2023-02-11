@@ -1,5 +1,4 @@
 server:
   port: 8005
-
 app:
-  base-rate: 18
+  base-rate: ${APP_BASERATE:18}
