@@ -6,8 +6,7 @@ import com.example.deal.db.entity.Credit;
 import com.example.deal.db.entity.Passport;
 import com.example.deal.db.enums.ApplicationStatus;
 import com.example.deal.db.enums.ChangeType;
-import com.example.deal.db.enums.CreditStatus;
-import com.example.deal.db.repository.ApplicationRepository;
+import com.example.deal.db.helper.ApplicationHelper;
 import com.example.deal.db.repository.ClientRepository;
 import com.example.deal.db.repository.CreditRepository;
 import com.example.deal.dto.request.FinishRegistrationRequestDTO;
@@ -28,6 +27,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import static com.example.deal.db.enums.ApplicationStatus.APPROVED;
+import static com.example.deal.db.enums.ApplicationStatus.CC_APPROVED;
+import static com.example.deal.db.enums.ChangeType.AUTOMATIC;
+import static com.example.deal.db.enums.ChangeType.MANUAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -40,9 +43,11 @@ class DealServiceTest {
     @Mock
     private ConveyorService conveyorService;
     @Mock
+    private DocumentService documentService;
+    @Mock
     private ClientRepository clientRepository;
     @Mock
-    private ApplicationRepository applicationRepository;
+    private ApplicationHelper applicationHelper;
     @Mock
     private CreditRepository creditRepository;
     @Spy
@@ -56,7 +61,7 @@ class DealServiceTest {
         Application application = createApplication(id);
         List<LoanOfferDTO> offers = createOffers();
         when(clientRepository.save(any())).thenReturn(client);
-        when(applicationRepository.save(any())).thenReturn(application);
+        when(applicationHelper.save(any())).thenReturn(application);
         when(conveyorService.offers(request)).thenReturn(offers);
 
         List<LoanOfferDTO> offersResult = dealService.application(request);
@@ -70,36 +75,25 @@ class DealServiceTest {
     void offer() {
         LoanOfferDTO request = createLoanOfferDTO();
         Application application = createApplication(UUID.randomUUID());
-        when(applicationRepository.getReferenceById(any())).thenReturn(application);
+        when(applicationHelper.getById(any())).thenReturn(application);
 
         dealService.offer(request);
 
         assertThat(application.getAppliedOffer()).isEqualTo(request);
-        assertThat(application.getStatus()).isEqualTo(ApplicationStatus.APPROVED);
-        assertHistory(application, ApplicationStatus.APPROVED, ChangeType.MANUAL);
-        verify(applicationRepository).save(application);
+        verify(applicationHelper).saveAndUpdateStatus(application, APPROVED, MANUAL);
     }
 
     @Test
     void calculate() {
         UUID id = UUID.randomUUID();
         Application application = createApplication(UUID.randomUUID());
-        when(applicationRepository.getReferenceById(id)).thenReturn(application);
+        when(applicationHelper.getById(id)).thenReturn(application);
         when(conveyorService.calculation(any())).thenReturn(new CreditDTO());
         when(creditRepository.save(any())).thenReturn(new Credit());
 
         dealService.calculate(id.toString(), new FinishRegistrationRequestDTO());
 
-        assertHistory(application, ApplicationStatus.CC_APPROVED, ChangeType.AUTOMATIC);
-        verify(applicationRepository).save(application);
-    }
-
-    private static void assertHistory(Application application, ApplicationStatus status, ChangeType changeType) {
-        assertThat(application.getStatusHistory())
-                .singleElement().satisfies(statusHistory -> {
-                    assertThat(statusHistory.getStatus()).isEqualTo(status);
-                    assertThat(statusHistory.getChangeType()).isEqualTo(changeType);
-                });
+        verify(applicationHelper).saveAndUpdateStatus(application, CC_APPROVED, AUTOMATIC);
     }
 
     private static Application createApplication(UUID id) {

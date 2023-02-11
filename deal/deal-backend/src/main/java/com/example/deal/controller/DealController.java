@@ -20,7 +20,6 @@ public class DealController implements DealApi {
     @Override
     public List<LoanOfferDTO> application(LoanApplicationRequestDTO loanApplicationRequestDTO,
                                           HttpHeaders headers) {
-
         return dealService.application(loanApplicationRequestDTO);
     }
 

@@ -1,3 +1,5 @@
+server:
+  port: 8004
 spring:
   application:
     name: deal
@@ -18,6 +20,15 @@ integration:
       connect-timeout: 30
       read-timeout: 30
       write-timeout: 30
+  dossier:
+    bootstrap-servers: localhost:9092
+    topic:
+      finish-registration: 'conveyor-finish-registration'
+      create-document: 'conveyor-create-documents'
+      send-document: 'conveyor-send-documents'
+      send-ses: 'conveyor-send-ses'
+      credit-issued: 'conveyor-credit-issued'
+      application-denied: 'conveyor-application-denied'
 
 logging:
   level:
