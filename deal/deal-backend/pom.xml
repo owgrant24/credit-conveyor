@@ -10,6 +10,7 @@
 
     <artifactId>deal-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>deal-backend</name>
     <description>deal-backend</description>
     <properties>

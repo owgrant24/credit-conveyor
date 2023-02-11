@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>deal-api</module>
+        <module>deal-backend</module>
     </modules>
 
     <properties>
