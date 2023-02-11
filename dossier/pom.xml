@@ -12,6 +12,7 @@
 
     <modules>
         <module>dossier-api</module>
+        <module>dossier-backend</module>
     </modules>
 
 
