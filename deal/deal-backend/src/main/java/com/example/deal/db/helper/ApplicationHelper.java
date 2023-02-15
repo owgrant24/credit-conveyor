@@ -5,6 +5,7 @@ import com.example.deal.db.entity.StatusHistory;
 import com.example.deal.db.enums.ApplicationStatus;
 import com.example.deal.db.enums.ChangeType;
 import com.example.deal.db.repository.ApplicationRepository;
+import com.example.deal.metric.MetricMonitoring;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,7 @@ public class ApplicationHelper {
         return applicationRepository.save(application);
     }
 
+    @MetricMonitoring
     public Application saveAndUpdateStatus(Application application, ApplicationStatus status, ChangeType changeType) {
         updateStatus(application, status, changeType);
         return applicationRepository.save(application);
