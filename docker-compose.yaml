@@ -69,7 +69,7 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - ./.docker/postgres:/var/lib/postgresql/data
     networks:
       - bridged_network
   zookeeper:
@@ -124,7 +124,7 @@ services:
       - '9090:9090'
     container_name: c-prometheus
     volumes:
-      - ./prometheus:/prometheus
+      - ./.docker/prometheus:/prometheus
       - ./deal/deal-backend/src/main/resources/prometheus.yaml:/etc/prometheus/prometheus.yml
     networks:
       - bridged_network
