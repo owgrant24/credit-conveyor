@@ -8,6 +8,8 @@ services:
       - "8999:8999"
     networks:
       - bridged_network
+    profiles:
+      - prod
   application:
     build: application
     container_name: c-application
@@ -17,6 +19,8 @@ services:
       INTEGRATION_DEAL_CLIENT_URL: 'http://deal:8004'
     networks:
       - bridged_network
+    profiles:
+      - prod
   conveyor:
     build: conveyor
     container_name: c-conveyor
@@ -24,6 +28,8 @@ services:
       - "8005:8005"
     networks:
       - bridged_network
+    profiles:
+      - prod
   deal:
     build: deal
     container_name: c-deal
@@ -42,13 +48,15 @@ services:
       INTEGRATION_DOSSIER_BOOTSTRAPSERVERS: 'kafka:9092'
     networks:
       - bridged_network
+    profiles:
+      - prod
   dossier:
     build: dossier
     container_name: c-dossier
     ports:
       - "8007:8007"
     environment:
-      DOSSIER_CONSUMER_BOOTSTRAPSERVERS: 'kafka:9092'
+      DOSSIER_CONSUMER_BOOTSTRAPSERVERS: 'kafka:29092'
       CONVEYOR_MAIL_HOST: 'smtp.rambler.ru'
       CONVEYOR_MAIL_PORT: '465'
     env_file:
@@ -57,6 +65,8 @@ services:
       - kafka
     networks:
       - bridged_network
+    profiles:
+      - prod
 
   database:
     image: 'postgres:13.1-alpine'
@@ -69,7 +79,7 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - ./.docker/postgres:/var/lib/postgresql/data
     networks:
       - bridged_network
   zookeeper:
@@ -95,7 +105,7 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -104,6 +114,28 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       CONFLUENT_METRICS_ENABLE: 'false'
+    networks:
+      - bridged_network
+  grafana:
+    image: grafana/grafana:9.3.6
+    container_name: c-grafana
+    ports:
+      - '3000:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    networks:
+      - bridged_network
+  prometheus:
+    image: prom/prometheus:v2.42.0
+    ports:
+      - '9090:9090'
+    container_name: c-prometheus
+    volumes:
+      - ./.docker/prometheus:/prometheus
+      - ./deal/deal-backend/src/main/resources/prometheus.yaml:/etc/prometheus/prometheus.yml
     networks:
       - bridged_network
 
