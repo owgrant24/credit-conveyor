@@ -8,6 +8,8 @@ services:
       - "8999:8999"
     networks:
       - bridged_network
+    profiles:
+      - prod
   application:
     build: application
     container_name: c-application
@@ -17,6 +19,8 @@ services:
       INTEGRATION_DEAL_CLIENT_URL: 'http://deal:8004'
     networks:
       - bridged_network
+    profiles:
+      - prod
   conveyor:
     build: conveyor
     container_name: c-conveyor
@@ -24,6 +28,8 @@ services:
       - "8005:8005"
     networks:
       - bridged_network
+    profiles:
+      - prod
   deal:
     build: deal
     container_name: c-deal
@@ -42,6 +48,8 @@ services:
       INTEGRATION_DOSSIER_BOOTSTRAPSERVERS: 'kafka:9092'
     networks:
       - bridged_network
+    profiles:
+      - prod
   dossier:
     build: dossier
     container_name: c-dossier
@@ -57,6 +65,8 @@ services:
       - kafka
     networks:
       - bridged_network
+    profiles:
+      - prod
 
   database:
     image: 'postgres:13.1-alpine'
